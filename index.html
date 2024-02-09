@@ -6,12 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <script defer src="src/main.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+      <link rel="stylesheet" href="src/assets/main.css">
       <title>Product App</title>
   </head>
   <body>
   <div id="app">
-      <h1>{{ product }}</h1>
-      <p>{{description}}</p>
+      <div class="product">
+          <div class="product-image">
+              <img v-bind:src="image" v-bind:alt="altText" />
+              <a v-bind:href="link">More products like this.</a>
+          </div>
+
+          <div class="product-info">
+              <h1>{{ product }}</h1>
+          </div>
+      </div>
   </div>
   </body>
 </html>
