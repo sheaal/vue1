@@ -33,7 +33,10 @@ Vue.component('product-review', {
           <textarea id="review" v-model="review"></textarea>
         </p>
         <p>
-          <label for="rating">Rating:</label>
+          
+        
+        
+        <label for="rating">Rating:</label>
           <select id="rating" v-model.number="rating">
             <option>5</option>
             <option>4</option>
@@ -44,11 +47,11 @@ Vue.component('product-review', {
         </p>
 
         <p>Would you recommend this product?</p>
-        <label>
+        <label v-if = "rating >= 3">
           Yes
           <input type="radio" value="Yes" v-model="recommend"/>
         </label>
-        <label>
+        <label v-show = "rating < 3">
           No
           <input type="radio" value="No" v-model="recommend"/>
         </label>
@@ -81,14 +84,15 @@ Vue.component('product-review', {
                 this.review = null
                 this.rating = null
                 this.recommend = null
-            } else {
+            // this.$parent.saveReviewsToLocalStorage(); // Save reviews to local storage
+          } else {
                 if(!this.name) this.errors.push("Name required.")
                 if(!this.review) this.errors.push("Review required.")
                 if(!this.rating) this.errors.push("Rating required.")
                 if(!this.recommend) this.errors.push("Recommendation required.")
-            }
+          }
         }
-    }
+    },
 })
 Vue.component('info-tabs', {
     props: {
@@ -287,6 +291,17 @@ let app = new Vue({
             if (index !== -1) {
                 this.cart.splice(index, 1);
             }
-        }
-    }
+        },
+        // saveReviewsToLocalStorage() {
+        //     localStorage.setItem('reviews', JSON.stringify(this.reviews));
+        // },
+        // loadReviewsFromLocalStorage() {
+        //     const reviews = localStorage.getItem('reviews');
+        //     this.reviews = reviews ? JSON.parse(reviews) : [];
+        // }
+    },
+    // created() {
+    //     this.loadReviewsFromLocalStorage();
+    // }
+
 })
