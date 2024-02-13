@@ -199,6 +199,7 @@ Vue.component('product', {
           >
             Add to cart
           </button>
+          <button @click="removeFromCart">Remove from cart</button>
           <product-tabs :reviews="reviews"></product-tabs>
         </div>
       </div>
@@ -241,6 +242,9 @@ Vue.component('product', {
         updateCart(id) {
             this.cart.push(id);
         },
+        removeFromCart: function() {
+            this.$emit('remove-from-cart', this.variants[this.selectedVariant].variantId)
+        },
     },
     computed: {
         title() {
@@ -278,5 +282,11 @@ let app = new Vue({
         updateCart(id) {
             this.cart.push(id);
         },
+        removeItem(id) {
+            const index = this.cart.indexOf(id);
+            if (index !== -1) {
+                this.cart.splice(index, 1);
+            }
+        }
     }
 })
