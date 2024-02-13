@@ -62,6 +62,7 @@ Vue.component('product-review', {
             name: null,
             review: null,
             rating: null,
+            recommend: null,
             errors: [],
         }
     },
@@ -158,7 +159,7 @@ Vue.component('product-tabs', {
           </ul>
         </div>
         <div v-show="selectedTab === 'Make a Review'">
-          <product-review @review-submitted="addReview"></product-review>
+          <product-review></product-review>
         </div>
       </div>
     `,
