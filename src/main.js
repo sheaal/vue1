@@ -33,9 +33,7 @@ Vue.component('product-review', {
           <textarea id="review" v-model="review"></textarea>
         </p>
         <p>
-          
-        
-        
+
         <label for="rating">Rating:</label>
           <select id="rating" v-model.number="rating">
             <option>5</option>
@@ -72,7 +70,7 @@ Vue.component('product-review', {
     methods:{
         onSubmit() {
             this.errors = []
-            if(this.name && this.review && this.rating && this.recommend) {
+            if (this.name && this.review && this.rating && this.recommend) {
                 let productReview = {
                     name: this.name,
                     review: this.review,
@@ -84,15 +82,31 @@ Vue.component('product-review', {
                 this.review = null
                 this.rating = null
                 this.recommend = null
-            // this.$parent.saveReviewsToLocalStorage(); // Save reviews to local storage
-          } else {
-                if(!this.name) this.errors.push("Name required.")
-                if(!this.review) this.errors.push("Review required.")
-                if(!this.rating) this.errors.push("Rating required.")
-                if(!this.recommend) this.errors.push("Recommendation required.")
-          }
-        }
+                this.saveReviewsToLocalStorage();
+            } else {
+                if (!this.name) this.errors.push("Name required.")
+                if (!this.review) this.errors.push("Review required.")
+                if (!this.rating) this.errors.push("Rating required.")
+                if (!this.recommend) this.errors.push("Recommendation required.")
+            }
+        },
+
+        saveReviewsToLocalStorage() {
+            const reviews = JSON.stringify(this.reviews);
+                localStorage.setItem('reviews', reviews);
+        },
+        loadReviewsFromLocalStorage() {
+            const reviews = localStorage.getItem('reviews');
+            this.reviews = reviews ? JSON.parse(reviews) : [];
+        },
     },
+    created() {
+        this.loadReviewsFromLocalStorage();
+        eventBus.$on('review-submitted', productReview => {
+            this.reviews.push(productReview);
+            this.saveReviewsToLocalStorage();
+        });
+    }
 })
 Vue.component('info-tabs', {
     props: {
@@ -170,9 +184,13 @@ Vue.component('product-tabs', {
     data() {
         return {
             tabs: ['Reviews', 'Make a Review'],
-            selectedTab: 'Reviews'  // устанавливается с помощью @click
+            selectedTab: 'Reviews'
         }
-    }
+    },
+    created() {
+        const reviews = localStorage.getItem('reviews');
+        this.reviews = reviews ? JSON.parse(reviews) : [];
+    },
 })
 
 Vue.component('product', {
@@ -239,6 +257,7 @@ Vue.component('product', {
     methods: {
         addToCart() {
             this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
+
         },
         updateProduct(variantImage) {
             this.image = variantImage
@@ -254,13 +273,6 @@ Vue.component('product', {
         title() {
             return this.brand + ' ' + this.product;
         },
-        // image() {
-        //     return this.variants[this.selectedVariant].variantImage;
-        // },
-        // inStock(){
-        //     return this.variants[this.selectedVariant].variantQuantity
-        // }
-
         shipping() {
             if (this.premium) {
                 return "Free";
@@ -275,7 +287,6 @@ Vue.component('product', {
         })
     }
 })
-
 let app = new Vue({
     el: '#app',
     data: {
@@ -292,16 +303,5 @@ let app = new Vue({
                 this.cart.splice(index, 1);
             }
         },
-        // saveReviewsToLocalStorage() {
-        //     localStorage.setItem('reviews', JSON.stringify(this.reviews));
-        // },
-        // loadReviewsFromLocalStorage() {
-        //     const reviews = localStorage.getItem('reviews');
-        //     this.reviews = reviews ? JSON.parse(reviews) : [];
-        // }
     },
-    // created() {
-    //     this.loadReviewsFromLocalStorage();
-    // }
-
 })
